@@ -72,7 +72,10 @@
                                 <label for="editDeskripsi">Deskripsi</label>
                                 <textarea class="form-control" id="editDeskripsi" name="deskripsi" rows="3" required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
                         </form>
                     </div>
                 </div>

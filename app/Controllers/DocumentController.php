@@ -10,17 +10,23 @@ class DocumentController extends Controller
 {
     public function index($id)
     {
+        // Mengambil data user dari session
+        $session = session();
+        $user = $session->get('user');
+
+        if ($user === null) {
+            return redirect()->to('/loginForm')->with('error', 'Anda belum login');
+        }
+
         $documentModel = new DocumentModel();
         $categoryModel = new CategoryModel();
+        $categoriesyModel = new CategoryModel();
 
         // Tentukan jumlah item per halaman
         $perPage = 9;
 
         // Tentukan halaman saat ini
         $currentPage = $this->request->getVar('page') ?? 1;
-
-        // Mendapatkan category
-        $category = $categoryModel->where('id', $id)->first();
 
         // Hitung offset
         $offset = ($currentPage - 1) * $perPage;
@@ -30,6 +36,12 @@ class DocumentController extends Controller
 
         // Hitung total data
         $totalDocuments = $documentModel->where('category_id', $id)->countAllResults();
+
+        // Mengambil data kategori dari model
+        $categories = $categoriesyModel->where('user_id', $user['id'])->findAll();
+
+        // Mendapatkan category
+        $category = $categoryModel->where('id', $id)->first();
 
         // Hitung jumlah halaman yang diperlukan
         $totalPages = ceil($totalDocuments / $perPage);
@@ -41,6 +53,7 @@ class DocumentController extends Controller
             'totalPages' => $totalPages,
             'categoryId' => $id,
             'category' => $category,
+            'categories' => $categories,
         ]);
     }
 
@@ -51,7 +64,7 @@ class DocumentController extends Controller
         $user = $session->get('user');
 
         if ($user === null) {
-            return redirect()->to('/')->with('error', 'Anda belum login');
+            return redirect()->to('/loginForm')->with('error', 'Anda belum login');
         }
         // Mengambil data kategori dari model
         $categoryModel = new CategoryModel();
@@ -102,8 +115,13 @@ class DocumentController extends Controller
         // Ambil ID kategori untuk redirect
         $categoryId = $this->request->getPost('categoryId');
 
-        // Redirect ke halaman upload dengan pesan sukses
-        return redirect()->to('/category/' . $categoryId)->with('success', 'Document berhasil di upload.');
+        $isHome = $this->request->getPost('home');
+        if ($isHome == null) {
+            // Redirect ke halaman upload dengan pesan sukses
+            return redirect()->to('/category/' . $categoryId)->with('success', 'Document berhasil di upload.');
+        }
+
+        return redirect()->back()->with('success', 'Document berhasil di upload.');
     }
 
     public function updateDocument()
@@ -132,6 +150,7 @@ class DocumentController extends Controller
         $data = [
             'judul' => $this->request->getPost('judul'),
             'keterangan' => $this->request->getPost('keterangan'),
+            'category_id' => $this->request->getPost('categoryId'),
         ];
 
         $documentModel->update($id, $data);

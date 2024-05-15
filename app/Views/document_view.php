@@ -78,22 +78,34 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form edit dokumen -->
-                        <form id="editDocumentForm" action="<?= site_url('update-document') ?>" method="post">
+                        <form id="editDocumentForm" action="<?= site_url('update-document') ?>" method="post" autocomplete="off">
                             <input type="hidden" id="editDocumentId" name="id">
                             <div class="form-group">
-                                <label for="editJudul">Judul</label>
+                                <label for="editJudul">Judul:</label>
                                 <input type="text" class="form-control" id="editJudul" name="judul">
                             </div>
                             <div class="form-group">
-                                <label for="editKeterangan">Keterangan</label>
+                                <label for="editKeterangan">Keterangan:</label>
                                 <textarea class="form-control" id="editKeterangan" name="keterangan" rows="3"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </form>
+                            <div class="form-group">
+                                <label for="editCategory">Kategori:</label>
+                                <select class="form-control" id="editCategoryId" name="categoryId">
+                                    <?php foreach ($categories as $categoryList) : ?>
+                                        <option value="<?= $categoryList['id'] ?>"><?= $categoryList['nama'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                    </form>
                 </div>
             </div>
         </div>
+
 
         <!--Delete Document Modal -->
         <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
@@ -167,7 +179,7 @@
                                     <p class="card-text text-muted"><?= $document['keterangan'] ?></p>
                                     <p class="card-text text-muted"><?= $document['created_at'] ?> | <?= pathinfo($document['path'], PATHINFO_EXTENSION) ?> | <?= $document['size'] ?> </p>
                                     <a href="<?= base_url('downloads/' . $document['path']) ?>" class="btn btn-primary mr-2" onclick="event.stopPropagation()">Download</a> |
-                                    <a href="#" class="editDocument" data-toggle="modal" data-target="#editDocumentModal" data-id="<?= $document['id'] ?>" data-judul="<?= $document['judul'] ?>" data-keterangan="<?= $document['keterangan'] ?>" onclick="event.stopPropagation()">Edit</a> |
+                                    <a href="#" class="editDocument" data-toggle="modal" data-target="#editDocumentModal" data-id="<?= $document['id'] ?>" data-judul="<?= $document['judul'] ?>" data-keterangan="<?= $document['keterangan'] ?>" data-category-id="<?= $document['category_id'] ?>" onclick="event.stopPropagation()">Edit</a> |
                                     <a href="#" class="deleteDocument" data-id="<?= $document['id'] ?>" data-toggle="modal" data-target="#confirmDeleteModal" onclick="event.stopPropagation()">Delete</a>
                                     <!-- Add more details about the document -->
                                 </div>
@@ -223,8 +235,8 @@
 
             if (fileInput.files.length > 0) {
                 var fileSize = fileInput.files[0].size / 1024 / 1024; // Convert to MB
-                if (fileSize > 5) { // Check if file size exceeds 5MB
-                    fileSizeMessage.textContent = 'File size exceeds the limit (5MB)';
+                if (fileSize > 10) { // Check if file size exceeds 5MB
+                    fileSizeMessage.textContent = 'File size exceeds the limit (10MB)';
                     uploadButton.disabled = true;
                 } else {
                     fileSizeMessage.textContent = '';
@@ -240,10 +252,12 @@
                 var id = $(this).data('id');
                 var judul = $(this).data('judul');
                 var keterangan = $(this).data('keterangan');
+                var categoryIdEdit = $(this).data('category-id');
 
                 $('#editDocumentId').val(id);
                 $('#editJudul').val(judul);
                 $('#editKeterangan').val(keterangan);
+                $('#editCategoryId').val(categoryIdEdit);
 
                 $('#editDocumentModal').modal('show');
             });

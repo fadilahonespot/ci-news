@@ -63,7 +63,7 @@
                 </form>
             </div>
             <div class="card-footer text-center">
-                <p>Do have an account? <a href="<?= site_url('/') ?>">Login</a></p>
+                <p>Do have an account? <a href="<?= site_url('/loginForm') ?>">Login</a></p>
             </div>
         </div>
     </div>
