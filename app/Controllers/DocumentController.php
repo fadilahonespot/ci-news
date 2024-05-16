@@ -151,6 +151,7 @@ class DocumentController extends Controller
             'judul' => $this->request->getPost('judul'),
             'keterangan' => $this->request->getPost('keterangan'),
             'category_id' => $this->request->getPost('categoryId'),
+            'permission' => $this->request->getPost('permission'),
         ];
 
         $documentModel->update($id, $data);

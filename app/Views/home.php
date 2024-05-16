@@ -67,7 +67,7 @@
                 <canvas id="myChart"></canvas>
             </div>
             <div class="col-md-6">
-                <h2 class="mb-4">My Docs Apps</h2>
+                <h2 class="mb-4">My Docs Dasboard</h2>
                 <?php if ($user) : ?>
                     <h5 class="mb-4">Welcome back, <?= $user['name'] ?>!</h5>
                 <?php endif; ?>
