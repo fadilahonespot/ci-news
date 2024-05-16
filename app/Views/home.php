@@ -99,11 +99,15 @@
                         <h2>List Documents</h2>
                     </div>
                     <!-- Search form -->
-                    <form class="form-inline">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <form class="form-inline" action="<?= site_url('/home') ?>" method="get">
+                        <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
                     </form>
                 </div>
+                <?php if ($searchQuery) : ?>
+                    <p>Menampilkan hasil pencarian untuk: <strong><?= esc($searchQuery) ?></strong>. Total hasil: <?= count($lastDocuments) ?></p>
+                <?php endif; ?>
+
                 <table class="table">
                     <thead>
                         <tr>
