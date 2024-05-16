@@ -11,6 +11,19 @@ class PreviewController extends Controller
     {
         $documentModel = new DocumentModel();
         $document = $documentModel->where('id', $id)->first();
+        if ($document == null) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+
+        if ($document['permission'] == '1') {
+            $session = session();
+            $user = $session->get('user');
+
+            if ($user === null) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            }
+        }
+        
         $data = [
             'document' => $document
         ];

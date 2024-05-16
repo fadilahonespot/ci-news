@@ -14,7 +14,7 @@ class CategoryController extends Controller
         $user = $session->get('user');
 
         if ($user === null) {
-            return redirect()->to('/')->with('error', 'Anda belum login');
+            return redirect()->to('/loginForm')->with('error', 'Anda belum login');
         }
         
         // Mengambil data kategori dari model
@@ -37,6 +37,10 @@ class CategoryController extends Controller
         // Mengambil data user dari session
         $session = session();
         $user = $session->get('user');
+
+        if ($user === null) {
+            return redirect()->to('/loginForm')->with('error', 'Anda belum login');
+        }
 
         // Ambil data dari form
         $data = [
@@ -83,6 +87,10 @@ class CategoryController extends Controller
         // Mengambil data user dari session
         $session = session();
         $user = $session->get('user');
+
+        if ($user === null) {
+            return redirect()->to('/loginForm')->with('error', 'Anda belum login');
+        }
 
         // Ambil data dari form
         $data = [

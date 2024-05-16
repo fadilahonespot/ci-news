@@ -15,7 +15,7 @@ $routes->get('edit-view/(:num)', 'UserController::singleUser/$1');
 $routes->post('update', 'UserController::update');
 $routes->get('delete/(:num)', 'UserController::delete/$1');
 $routes->post('login', 'UserController::login');
-$routes->get('/', 'UserController::loginForm');
+$routes->get('/loginForm', 'UserController::loginForm');
 $routes->get('category', 'CategoryController::index');
 $routes->get('home', 'HomeController::index');
 $routes->get('logout', 'UserController::logout');
@@ -30,5 +30,6 @@ $routes->post('update-document', 'DocumentController::updateDocument');
 $routes->get('delete-document/(:num)', 'DocumentController::deleteDocument/$1');
 $routes->get('preview/(:num)', 'PreviewController::index/$1');
 $routes->get('profile', 'UserController::profile');
+$routes->get('/', 'IndexController::index');
 
 

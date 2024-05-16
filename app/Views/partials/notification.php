@@ -41,8 +41,9 @@
 
 <!-- Pesan sukses -->
 <?php if (session()->getFlashdata('success')) : ?>
-    <div class="toast bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+    <div class="toast bg-success" role="alert" aria-live="assertive" aria-atomic="true" data-delay="7000">
         <div class="toast-header">
+            <img src="<?= base_url('icon/success.svg') ?>" alt="notif success" style="width: 20px; height: 20px; margin-right: 10px;">
             <strong class="mr-auto">Sukses!</strong>
             <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -56,8 +57,9 @@
 
 <!-- Pesan kesalahan validasi -->
 <?php if (session()->getFlashdata('error')) : ?>
-    <div class="toast bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000" style="position: fixed; bottom: 20px; right: 20px;">
+    <div class="toast bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-delay="7000" style="position: fixed; bottom: 20px; right: 20px;">
         <div class="toast-header">
+            <img src="<?= base_url('icon/error.svg') ?>" alt="notif error" style="width: 20px; height: 20px; margin-right: 10px;">
             <strong class="mr-auto">Kesalahan!</strong>
             <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -70,8 +72,9 @@
 <?php endif; ?>
 
 <?php if (session()->getFlashdata('errors')) : ?>
-    <div class="toast bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000" style="position: fixed; bottom: 20px; right: 20px;">
+    <div class="toast bg-danger" role="alert" aria-live="assertive" aria-atomic="true" data-delay="7000" style="position: fixed; bottom: 20px; right: 20px;">
         <div class="toast-header">
+            <img src="<?= base_url('icon/error.svg') ?>" alt="notif error" style="width: 20px; height: 20px; margin-right: 10px;">
             <strong class="mr-auto">Kesalahan!</strong>
             <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                 <span aria-hidden="true">&times;</span>

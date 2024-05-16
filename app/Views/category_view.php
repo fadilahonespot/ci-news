@@ -14,6 +14,23 @@
             transform: translateY(-5px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
+        .context-menu {
+            z-index: 1000;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            border-radius: 5px;
+            padding: 0;
+            width: 150px;
+        }
+
+        .context-menu .list-group-item {
+            cursor: pointer;
+        }
+
+        .context-menu .list-group-item:hover {
+            background-color: #f5f5f5;
+        }
     </style>
 </head>
 
@@ -72,7 +89,10 @@
                                 <label for="editDeskripsi">Deskripsi</label>
                                 <textarea class="form-control" id="editDeskripsi" name="deskripsi" rows="3" required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -108,21 +128,26 @@
         <div class="row">
             <?php foreach ($categories as $category) : ?>
                 <div class="col-md-4 mb-4">
-                    <div class="card position-relative card-hover">
+                    <div class="card position-relative card-hover" id="categoryCard<?= $category['id'] ?>">
                         <a href="<?= site_url('category/' . $category['id']) ?>" style="text-decoration: none; color: inherit;">
                             <div class="card-body">
                                 <h5 class="card-title"><?= $category['nama'] ?></h5>
                                 <p class="card-text"><?= $category['deskripsi'] ?></p>
                             </div>
                         </a>
-                        <div class="card-footer">
-                            <a href="#" class="editCategory" data-id="<?= $category['id'] ?>" data-nama="<?= $category['nama'] ?>" data-deskripsi="<?= $category['deskripsi'] ?>">Edit</a> |
-                            <a href="#" class="deleteCategory" data-id="<?= $category['id'] ?>" data-toggle="modal" data-target="#confirmDeleteModal">Delete</a>
-                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <!-- Menu klik kanan -->
+        <div id="contextMenu" class="context-menu" style="display: none; position: absolute;">
+            <ul class="list-group">
+                <li class="list-group-item editCategory">Edit</li>
+                <li class="list-group-item deleteCategory" data-toggle="modal" data-target="#confirmDeleteModal">Delete</li>
+            </ul>
+        </div>
+
     </div>
 
     <script>
@@ -145,6 +170,68 @@
                 var categoryId = $(this).data('id');
                 $('#deleteCategoryButton').attr('href', '<?= site_url('delete-category/') ?>' + categoryId);
             });
+        });
+
+        // Menambahkan event listener untuk menangani klik kanan pada setiap card
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault(); // Mencegah konteks menu standar muncul
+            var card = e.target.closest('.card'); // Mendapatkan card yang diklik
+            if (card) {
+                var categoryId = card.id.replace('categoryCard', ''); // Mendapatkan id kategori dari id card
+                var categoryName = card.querySelector('.card-title').innerText; // Mendapatkan nama kategori
+                var categoryDescription = card.querySelector('.card-text').innerText; // Mendapatkan deskripsi kategori
+
+                // Mendapatkan referensi ke menu konteks
+                var menu = document.getElementById('contextMenu');
+
+                // Menyimpan data kategori di dalam atribut data
+                var editCategory = menu.querySelector('.editCategory');
+                editCategory.setAttribute('data-id', categoryId);
+                editCategory.setAttribute('data-nama', categoryName);
+                editCategory.setAttribute('data-deskripsi', categoryDescription);
+
+                var deleteCategory = menu.querySelector('.deleteCategory');
+                deleteCategory.setAttribute('data-id', categoryId);
+
+                // Menampilkan menu di posisi klik
+                menu.style.left = e.pageX + 'px';
+                menu.style.top = e.pageY + 'px';
+                menu.style.display = 'block';
+
+                // Menghapus menu saat pengguna mengklik di luar menu
+                document.addEventListener('click', function closeMenu(event) {
+                    if (!menu.contains(event.target)) {
+                        menu.style.display = 'none';
+                        document.removeEventListener('click', closeMenu);
+                    }
+                });
+            }
+        });
+
+        // Event listener untuk tombol Edit
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('editCategory')) {
+                var categoryId = e.target.getAttribute('data-id');
+                var categoryName = e.target.getAttribute('data-nama');
+                var categoryDescription = e.target.getAttribute('data-deskripsi');
+
+                // Isi form edit dengan data kategori
+                document.getElementById('editDocumentId').value = categoryId;
+                document.getElementById('editJudul').value = categoryName;
+                document.getElementById('editKeterangan').value = categoryDescription;
+
+                // Tampilkan modal edit
+                $('#editDocumentModal').modal('show');
+            }
+        });
+
+        // Event listener untuk tombol Delete
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('deleteCategory')) {
+                var categoryId = e.target.getAttribute('data-id');
+                // Implementasi logika untuk menghapus kategori berdasarkan categoryId
+                console.log('Delete category ID:', categoryId);
+            }
         });
     </script>
 

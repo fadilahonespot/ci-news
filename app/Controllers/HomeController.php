@@ -16,7 +16,7 @@ class HomeController extends Controller
         $user = $session->get('user');
 
         if ($user === null) {
-            return redirect()->to('/')->with('error', 'Anda belum login');
+            return redirect()->to('/loginForm')->with('error', 'Anda belum login');
         }
 
         $userId = $user['id'];
@@ -54,16 +54,33 @@ class HomeController extends Controller
         // Mendapatkan array dari daftar category_id
         $categoryIdsArray = array_column($categoryIds, 'id');
 
+        // Tentukan jumlah item per halaman
+        $perPage = 9;
+
+        // Tentukan halaman saat ini
+        $currentPage = $this->request->getVar('page') ?? 1;
+
+        // Hitung offset
+        $offset = ($currentPage - 1) * $perPage;
+
         // Mengambil dokumen terakhir berdasarkan category_id dengan pagination
-        $lastDocuments = $documentsModel->whereIn('category_id', $categoryIdsArray)
-            ->orderBy('id', 'DESC')
-            ->paginate(6); // Menentukan jumlah dokumen per halaman
+        $lastDocuments = $documentsModel->select('document.*, category.id as category_id, category.nama as category_name')
+            ->join('category', 'category.id = document.category_id')
+            ->whereIn('category_id', $categoryIdsArray)
+            ->orderBy('document.id', 'DESC')
+            ->findAll($perPage, $offset);
 
         // Menghitung total dokumen
         $totalDocuments = 0;
         foreach ($categoriesData as $category) {
             $totalDocuments += $category['total_documents'];
         }
+
+        // Mengambil data kategori dari model
+        $categories = $categoryModel->where('user_id', $user['id'])->findAll();
+
+        // Hitung jumlah halaman yang diperlukan
+        $totalPages = ceil($totalDocuments / $perPage);
 
         // Menyusun data untuk ditampilkan di view
         $data = [
@@ -72,7 +89,10 @@ class HomeController extends Controller
             'totalCategories' => count($categoriesData),
             'totalDocuments' => $totalDocuments,
             'totalSize' => $totalSize,
-            'lastDocuments' => $lastDocuments
+            'lastDocuments' => $lastDocuments,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
+            'categories' => $categories,
         ];
 
         // Menampilkan view home dengan data jumlah user, category, dan dokumen

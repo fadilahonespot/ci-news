@@ -43,7 +43,7 @@ class UserController extends Controller
         $encrypted_password = password_hash($data['password'], PASSWORD_DEFAULT);
         $data['password'] = $encrypted_password;
         $userModel->insert($data);
-        return redirect()->to('/')->with('success', 'Berhasil melakukan registrasi');
+        return redirect()->to('/loginForm')->with('success', 'Berhasil melakukan registrasi');
     }
 
     public function singleUser($id = null)
@@ -151,7 +151,7 @@ class UserController extends Controller
         $session = session();
         $userSession = $session->get('user');
         if ($userSession === null) {
-            return redirect()->to('/')->with('error', 'Anda belum login');
+            return redirect()->to('/loginForm')->with('error', 'Anda belum login');
         }
 
         $userModel = new UserModel();

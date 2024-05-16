@@ -19,6 +19,23 @@
             transform: translateY(-5px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
+        .context-menu {
+            z-index: 1000;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            border-radius: 5px;
+            padding: 0;
+            width: 150px;
+        }
+
+        .context-menu .list-group-item {
+            cursor: pointer;
+        }
+
+        .context-menu .list-group-item:hover {
+            background-color: #f5f5f5;
+        }
     </style>
 </head>
 
@@ -78,22 +95,35 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form edit dokumen -->
-                        <form id="editDocumentForm" action="<?= site_url('update-document') ?>" method="post">
+                        <form id="editDocumentForm" action="<?= site_url('update-document') ?>" method="post" autocomplete="off">
                             <input type="hidden" id="editDocumentId" name="id">
+                            <input type="hidden" id="editPermission" name="permission">
                             <div class="form-group">
-                                <label for="editJudul">Judul</label>
+                                <label for="editJudul">Judul:</label>
                                 <input type="text" class="form-control" id="editJudul" name="judul">
                             </div>
                             <div class="form-group">
-                                <label for="editKeterangan">Keterangan</label>
+                                <label for="editKeterangan">Keterangan:</label>
                                 <textarea class="form-control" id="editKeterangan" name="keterangan" rows="3"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                        </form>
+                            <div class="form-group">
+                                <label for="editCategory">Kategori:</label>
+                                <select class="form-control" id="editCategoryId" name="categoryId">
+                                    <?php foreach ($categories as $categoryList) : ?>
+                                        <option value="<?= $categoryList['id'] ?>"><?= $categoryList['nama'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                    </form>
                 </div>
             </div>
         </div>
+
 
         <!--Delete Document Modal -->
         <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
@@ -116,6 +146,50 @@
             </div>
         </div>
 
+        <!-- Modal Share Document -->
+        <div class="modal fade" id="shareDocumentModal" tabindex="-1" role="dialog" aria-labelledby="shareDocumentModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="shareDocumentModalLabel">Share Document</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form share dokumen -->
+                        <form id="shareDocumentForm" action="<?= site_url('update-document') ?>" method="post">
+                            <div class="form-group">
+                                <label for="shareDocumentName">Nama</label>
+                                <input type="text" class="form-control" id="shareDocumentName" name="name" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="shareDocumentUrl">Preview URL</label>
+                                <input type="text" class="form-control" id="shareDocumentPreviewUrl" name="url" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="shareDocumentUrl">Download URL</label>
+                                <input type="text" class="form-control" id="shareDocumentDownloadUrl" name="url" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="shareDocumentPermission">Perijinan akses dokumen</label>
+                                <select class="form-control" id="shareDocumentPermission" name="permission">
+                                    <option value="1">Sesama user saja</option>
+                                    <option value="2">Semua orang</option>
+                                </select>
+                            </div>
+                            <input type="hidden" id="shareDocumentId" name="id">
+                            <input type="hidden" id="shareDocumentJudul" name="judul">
+                            <input type="hidden" id="shareDocumentDescription" name="keterangan">
+                            <input type="hidden" id="shareDocumentCategoryId" name="categoryId">
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <!-- Upload Document Section -->
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><a href="<?= site_url('/category') ?>">Category</a> > <?= $category['nama'] ?></h5>
@@ -127,7 +201,7 @@
         <div class="row">
             <?php foreach ($documents as $document) : ?>
                 <div class="col-md-4 mb-4">
-                    <div class="card card-hover">
+                    <div class="card card-hover" data-category-id="<?= $document['category_id'] ?>" data-id="<?= $document['id'] ?>" data-judul="<?= $document['judul'] ?>" data-keterangan="<?= $document['keterangan'] ?>" data-path="<?= $document['path'] ?>" data-permission="<?= $document['permission'] ?>">
                         <div class="card-body" onclick="previewDocument(<?= $document['id'] ?>)">
                             <div class="row align-items-center">
                                 <!-- File Extension Icon -->
@@ -166,18 +240,23 @@
                                     <h6 class="card-title"><?= $document['judul'] ?></h6>
                                     <p class="card-text text-muted"><?= $document['keterangan'] ?></p>
                                     <p class="card-text text-muted"><?= $document['created_at'] ?> | <?= pathinfo($document['path'], PATHINFO_EXTENSION) ?> | <?= $document['size'] ?> </p>
-                                    <a href="<?= base_url('downloads/' . $document['path']) ?>" class="btn btn-primary mr-2" onclick="event.stopPropagation()">Download</a> |
-                                    <a href="#" class="editDocument" data-toggle="modal" data-target="#editDocumentModal" data-id="<?= $document['id'] ?>" data-judul="<?= $document['judul'] ?>" data-keterangan="<?= $document['keterangan'] ?>" onclick="event.stopPropagation()">Edit</a> |
-                                    <a href="#" class="deleteDocument" data-id="<?= $document['id'] ?>" data-toggle="modal" data-target="#confirmDeleteModal" onclick="event.stopPropagation()">Delete</a>
                                     <!-- Add more details about the document -->
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             <?php endforeach; ?>
+        </div>
+
+        <!-- Menu klik kanan -->
+        <div id="contextMenu" class="context-menu" style="display: none; position: absolute;">
+            <ul class="list-group">
+                <li class="list-group-item downloadDocument">Download</li>
+                <li class="list-group-item shareDocument" data-toggle="modal" data-target="shareDocumentModal">Share</li>
+                <li class="list-group-item editDocument" data-toggle="modal" data-target="#editDocumentModal">Edit</li>
+                <li class="list-group-item deleteDocument" data-toggle="modal" data-target="#confirmDeleteModal">Delete</li>
+            </ul>
         </div>
 
         <!-- Pagination -->
@@ -223,8 +302,8 @@
 
             if (fileInput.files.length > 0) {
                 var fileSize = fileInput.files[0].size / 1024 / 1024; // Convert to MB
-                if (fileSize > 5) { // Check if file size exceeds 5MB
-                    fileSizeMessage.textContent = 'File size exceeds the limit (5MB)';
+                if (fileSize > 10) { // Check if file size exceeds 5MB
+                    fileSizeMessage.textContent = 'File size exceeds the limit (10MB)';
                     uploadButton.disabled = true;
                 } else {
                     fileSizeMessage.textContent = '';
@@ -235,19 +314,21 @@
             }
         }
 
-        $(document).ready(function() {
-            $('.editDocument').click(function() {
-                var id = $(this).data('id');
-                var judul = $(this).data('judul');
-                var keterangan = $(this).data('keterangan');
+        // $(document).ready(function() {
+        //     $('.editDocument').click(function() {
+        //         var id = $(this).data('id');
+        //         var judul = $(this).data('judul');
+        //         var keterangan = $(this).data('keterangan');
+        //         var categoryIdEdit = $(this).data('category-id');
 
-                $('#editDocumentId').val(id);
-                $('#editJudul').val(judul);
-                $('#editKeterangan').val(keterangan);
+        //         $('#editDocumentId').val(id);
+        //         $('#editJudul').val(judul);
+        //         $('#editKeterangan').val(keterangan);
+        //         $('#editCategoryId').val(categoryIdEdit);
 
-                $('#editDocumentModal').modal('show');
-            });
-        });
+        //         $('#editDocumentModal').modal('show');
+        //     });
+        // });
 
         $(document).ready(function() {
             $('.deleteDocument').click(function() {
@@ -260,6 +341,129 @@
             // Redirect to the preview controller with document ID as parameter
             window.location.href = "<?= site_url('preview/') ?>" + documentId;
         }
+
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault(); // Mencegah konteks menu standar muncul
+            var card = e.target.closest('.card'); // Mendapatkan card yang diklik
+            if (card) {
+                var documentId = card.getAttribute('data-id'); // Mendapatkan id dokumen dari id card
+                var documentTitle = card.querySelector('.card-title').innerText; // Mendapatkan judul dokumen
+                var documentDescription = card.querySelector('.card-text').innerText; // Mendapatkan deskripsi dokumen
+                var documentCategoryId = card.getAttribute('data-category-id'); // Mendapatkan category_id dokumen
+                var documentPath = card.getAttribute('data-path'); // mendapatkan path dokumen
+                var documentPermission = parseInt(card.getAttribute('data-permission')); // Mendapatkan permission dokumen sebagai integer
+
+                // Mendapatkan referensi ke menu konteks
+                var menu = document.getElementById('contextMenu');
+
+                // Menyimpan data dokumen di dalam atribut data
+                var downloadDocument = menu.querySelector('.downloadDocument');
+                downloadDocument.setAttribute('data-path', documentPath);
+
+                var downloadDocument = menu.querySelector('.shareDocument');
+                downloadDocument.setAttribute('data-permission', documentPermission);
+
+                var editDocument = menu.querySelector('.editDocument');
+                editDocument.setAttribute('data-id', documentId);
+                editDocument.setAttribute('data-judul', documentTitle);
+                editDocument.setAttribute('data-keterangan', documentDescription);
+                editDocument.setAttribute('data-category-id', documentCategoryId);
+                editDocument.setAttribute('data-permission', documentPermission);
+
+                var deleteDocument = menu.querySelector('.deleteDocument');
+                deleteDocument.setAttribute('data-id', documentId);
+
+                var shareDocument = menu.querySelector('.shareDocument');
+                shareDocument.setAttribute('data-id', documentId);
+                shareDocument.setAttribute('data-title', documentTitle);
+                shareDocument.setAttribute('data-description', documentDescription);
+                shareDocument.setAttribute('data-category-id', documentCategoryId);
+                shareDocument.setAttribute('data-path', documentPath);
+                shareDocument.setAttribute('data-permission', documentPermission);
+
+                // Menampilkan menu di posisi klik
+                menu.style.left = e.pageX + 'px';
+                menu.style.top = e.pageY + 'px';
+                menu.style.display = 'block';
+
+                // Menghapus menu saat pengguna mengklik di luar menu
+                document.addEventListener('click', function closeMenu(event) {
+                    if (!menu.contains(event.target)) {
+                        menu.style.display = 'none';
+                        document.removeEventListener('click', closeMenu);
+                    }
+                });
+            }
+        });
+
+        // Event listener untuk tombol Download
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('downloadDocument')) {
+                var documentPath = e.target.getAttribute('data-path');
+                window.location.href = "<?= base_url('downloads') ?>/" + documentPath;
+            }
+        });
+
+        // Event listener untuk tombol Edit
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('editDocument')) {
+                var documentId = e.target.getAttribute('data-id');
+                var documentTitle = e.target.getAttribute('data-judul');
+                var documentDescription = e.target.getAttribute('data-keterangan');
+                var documentCategoryId = e.target.getAttribute('data-category-id');
+                var documentPermission = e.target.getAttribute('data-permission');
+
+                // Isi form edit dengan data dokumen
+                document.getElementById('editDocumentId').value = documentId;
+                document.getElementById('editJudul').value = documentTitle;
+                document.getElementById('editKeterangan').value = documentDescription;
+                document.getElementById('editCategoryId').value = documentCategoryId;
+                document.getElementById('editPermission').value = documentPermission;
+
+                // Tampilkan modal edit
+                $('#editDocumentModal').modal('show');
+            }
+        });
+
+        // Event listener untuk tombol Delete
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('deleteDocument')) {
+                var documentId = e.target.getAttribute('data-id');
+                // Implementasi logika untuk menghapus dokumen berdasarkan documentId
+                console.log('Delete document ID:', documentId);
+            }
+        });
+
+        // Listener untuk membuka modal share dokumen
+        document.querySelector('.shareDocument').addEventListener('click', function(e) {
+            var documentId = parseInt(e.target.getAttribute('data-id'));
+            var documentName = e.target.getAttribute('data-title');
+            var documentDescription = e.target.getAttribute('data-description');
+            var documentCategoryId = e.target.getAttribute('data-category-id');
+            var documentPath = e.target.getAttribute('data-path');
+            var documentPermission = parseInt(e.target.getAttribute('data-permission'));
+
+            // Set data ke modal
+            document.getElementById('shareDocumentId').value = documentId;
+            document.getElementById('shareDocumentName').value = documentName;
+            document.getElementById('shareDocumentDownloadUrl').value = "<?= base_url('downloads') ?>/" + documentPath;
+            document.getElementById('shareDocumentPreviewUrl').value = "<?= base_url('preview') ?>/" + documentId;
+            document.getElementById('shareDocumentDescription').value = documentDescription;
+            document.getElementById('shareDocumentCategoryId').value = documentCategoryId;
+            document.getElementById('shareDocumentJudul').value = documentName;
+
+            // Set the selected option based on the document permission
+            var permissionSelect = document.getElementById('shareDocumentPermission');
+            for (var i = 0; i < permissionSelect.options.length; i++) {
+                if (parseInt(permissionSelect.options[i].value) === documentPermission) {
+                    permissionSelect.selectedIndex = i;
+                    break;
+                }
+            }
+
+            // Tampilkan modal
+            $('#shareDocumentModal').modal('show');
+        });
     </script>
 
 </body>
