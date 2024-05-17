@@ -136,7 +136,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        Apakah Anda yakin ingin menghapus dokument ini?
+                        Apakah Anda yakin ingin menghapus dokument ini? <span id="documentName" class="font-weight-bold"></span>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
@@ -189,6 +189,26 @@
             </div>
         </div>
 
+        <!-- Download Modal -->
+        <div class="modal fade" id="downloadDocumentModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="downloadModalLabel">Download Document</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Apakah Anda yakin ingin mengunduh dokumen ini?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <a href="#" id="downloadDocumentButton" class="btn btn-primary">Unduh</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Upload Document Section -->
         <div class="d-flex justify-content-between align-items-center">
@@ -252,8 +272,8 @@
         <!-- Menu klik kanan -->
         <div id="contextMenu" class="context-menu" style="display: none; position: absolute;">
             <ul class="list-group">
-                <li class="list-group-item downloadDocument">Download</li>
-                <li class="list-group-item shareDocument" data-toggle="modal" data-target="shareDocumentModal">Share</li>
+                <li class="list-group-item downloadDocument" data-toggle="modal" data-target="#downloadDocumentModal">Download</li>
+                <li class="list-group-item shareDocument" data-toggle="modal" data-target="#shareDocumentModal">Share</li>
                 <li class="list-group-item editDocument" data-toggle="modal" data-target="#editDocumentModal">Edit</li>
                 <li class="list-group-item deleteDocument" data-toggle="modal" data-target="#confirmDeleteModal">Delete</li>
             </ul>
@@ -314,29 +334,6 @@
             }
         }
 
-        // $(document).ready(function() {
-        //     $('.editDocument').click(function() {
-        //         var id = $(this).data('id');
-        //         var judul = $(this).data('judul');
-        //         var keterangan = $(this).data('keterangan');
-        //         var categoryIdEdit = $(this).data('category-id');
-
-        //         $('#editDocumentId').val(id);
-        //         $('#editJudul').val(judul);
-        //         $('#editKeterangan').val(keterangan);
-        //         $('#editCategoryId').val(categoryIdEdit);
-
-        //         $('#editDocumentModal').modal('show');
-        //     });
-        // });
-
-        $(document).ready(function() {
-            $('.deleteDocument').click(function() {
-                var documentId = $(this).data('id');
-                $('#deleteDocumentButton').attr('href', '<?= site_url('delete-document/') ?>' + documentId);
-            });
-        });
-
         function previewDocument(documentId) {
             // Redirect to the preview controller with document ID as parameter
             window.location.href = "<?= site_url('preview/') ?>" + documentId;
@@ -360,9 +357,6 @@
                 var downloadDocument = menu.querySelector('.downloadDocument');
                 downloadDocument.setAttribute('data-path', documentPath);
 
-                var downloadDocument = menu.querySelector('.shareDocument');
-                downloadDocument.setAttribute('data-permission', documentPermission);
-
                 var editDocument = menu.querySelector('.editDocument');
                 editDocument.setAttribute('data-id', documentId);
                 editDocument.setAttribute('data-judul', documentTitle);
@@ -372,6 +366,7 @@
 
                 var deleteDocument = menu.querySelector('.deleteDocument');
                 deleteDocument.setAttribute('data-id', documentId);
+                deleteDocument.setAttribute('data-name', documentTitle);
 
                 var shareDocument = menu.querySelector('.shareDocument');
                 shareDocument.setAttribute('data-id', documentId);
@@ -396,14 +391,6 @@
             }
         });
 
-        // Event listener untuk tombol Download
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('downloadDocument')) {
-                var documentPath = e.target.getAttribute('data-path');
-                window.location.href = "<?= base_url('downloads') ?>/" + documentPath;
-            }
-        });
-
         // Event listener untuk tombol Edit
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('editDocument')) {
@@ -425,12 +412,33 @@
             }
         });
 
+        // Event listener untuk tombol Download
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('downloadDocument')) {
+                var documentPath = e.target.getAttribute('data-path');
+                var downloadButton = document.getElementById('downloadDocumentButton');
+                downloadButton.setAttribute('href', '<?= site_url('downloads/') ?>' + documentPath);
+
+                // Menambahkan event listener untuk menutup modal saat tombol unduh diklik
+                downloadButton.addEventListener('click', function() {
+                    $('#downloadDocumentModal').modal('hide');
+                }, {
+                    once: true
+                });
+            }
+        });
+
         // Event listener untuk tombol Delete
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('deleteDocument')) {
                 var documentId = e.target.getAttribute('data-id');
+                var documentName = e.target.getAttribute('data-name');
+
                 // Implementasi logika untuk menghapus dokumen berdasarkan documentId
-                console.log('Delete document ID:', documentId);
+                document.getElementById('deleteDocumentButton').setAttribute('href', '<?= site_url('delete-document/') ?>' + documentId);
+
+                document.getElementById('documentName').textContent = documentName;
+                $('#confirmDeleteModal').modal('show');
             }
         });
 

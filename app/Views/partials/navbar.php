@@ -30,15 +30,15 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?= site_url('/home') ?>">Home</a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="<?= site_url('/user-view') ?>">User</a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a class="nav-link" href="<?= site_url('/category') ?>">Category</a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="<?= site_url('/uploadForm') ?>">Document</a>
-                </li>
+                </li> -->
             </ul>
             <ul class="navbar-nav">
                 <?php

@@ -63,17 +63,35 @@ class HomeController extends Controller
         // Hitung offset
         $offset = ($currentPage - 1) * $perPage;
 
-        // Mengambil dokumen terakhir berdasarkan category_id dengan pagination
-        $lastDocuments = $documentsModel->select('document.*, category.id as category_id, category.nama as category_name')
+        // Mengambil parameter pencarian
+        $searchQuery = $this->request->getVar('q');
+
+        // Mengambil dokumen terakhir berdasarkan category_id dengan pagination dan pencarian
+        $documentQuery = $documentsModel->select('document.*, category.id as category_id, category.nama as category_name')
             ->join('category', 'category.id = document.category_id')
             ->whereIn('category_id', $categoryIdsArray)
-            ->orderBy('document.id', 'DESC')
-            ->findAll($perPage, $offset);
+            ->orderBy('document.id', 'DESC');
 
-        // Menghitung total dokumen
+        // Jika ada kata kunci pencarian, tambahkan kondisi pencarian
+        if ($searchQuery) {
+            $documentQuery->like('document.judul', $searchQuery);
+        }
+
+        $lastDocuments = $documentQuery->findAll($perPage, $offset);
+
+        // Hitung total dokumen
         $totalDocuments = 0;
         foreach ($categoriesData as $category) {
             $totalDocuments += $category['total_documents'];
+        }
+
+        // Jika ada kata kunci pencarian, hitung ulang total dokumen yang sesuai dengan pencarian
+        if ($searchQuery) {
+            $totalDocuments = $documentsModel->selectCount('document.id')
+                ->join('category', 'category.id = document.category_id')
+                ->whereIn('category_id', $categoryIdsArray)
+                ->like('document.judul', $searchQuery)
+                ->countAllResults(false);
         }
 
         // Mengambil data kategori dari model
@@ -93,6 +111,7 @@ class HomeController extends Controller
             'currentPage' => $currentPage,
             'totalPages' => $totalPages,
             'categories' => $categories,
+            'searchQuery' => $searchQuery, // Tambahkan ini untuk menyimpan kata kunci pencarian di view
         ];
 
         // Menampilkan view home dengan data jumlah user, category, dan dokumen

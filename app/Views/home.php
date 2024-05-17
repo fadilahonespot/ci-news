@@ -99,11 +99,15 @@
                         <h2>List Documents</h2>
                     </div>
                     <!-- Search form -->
-                    <form class="form-inline">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <form class="form-inline" action="<?= site_url('/home') ?>" method="get">
+                        <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
                     </form>
                 </div>
+                <?php if ($searchQuery) : ?>
+                    <p>Menampilkan hasil pencarian untuk: <strong><?= esc($searchQuery) ?></strong>. Total hasil: <?= $totalDocuments ?></p>
+                <?php endif; ?>
+
                 <table class="table">
                     <thead>
                         <tr>
@@ -138,15 +142,15 @@
         <nav aria-label="Page navigation">
             <ul class="pagination">
                 <?php if ($currentPage > 1) : ?>
-                    <li class="page-item"><a class="page-link" href="?page=<?= $currentPage - 1 ?>">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="?page=<?= $currentPage - 1 ?>&q=<?= urlencode($searchQuery) ?>">Previous</a></li>
                 <?php endif; ?>
 
                 <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
-                    <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>"><a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a></li>
+                    <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>"><a class="page-link" href="?page=<?= $i ?>&q=<?= urlencode($searchQuery) ?>"><?= $i ?></a></li>
                 <?php endfor; ?>
 
                 <?php if ($currentPage < $totalPages) : ?>
-                    <li class="page-item"><a class="page-link" href="?page=<?= $currentPage + 1 ?>">Next</a></li>
+                    <li class="page-item"><a class="page-link" href="?page=<?= $currentPage + 1 ?>&q=<?= urlencode($searchQuery) ?>">Next</a></li>
                 <?php endif; ?>
             </ul>
         </nav>
