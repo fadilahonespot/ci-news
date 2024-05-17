@@ -1,4 +1,34 @@
 <style>
+    .navbar {
+        background-color: #343a40;
+    }
+
+    .navbar-brand,
+    .nav-link {
+        color: #fff !important;
+    }
+
+    .navbar-brand {
+        font-weight: bold;
+        font-size: 1.5em;
+    }
+
+    .nav-link {
+        margin-right: 15px;
+    }
+
+    .nav-link:hover {
+        color: #adb5bd !important;
+    }
+
+    .btn-login,
+    .btn-register {
+        color: #fff !important;
+        margin-left: 10px;
+        border-radius: 20px;
+        padding: 5px 15px;
+    }
+
     .btn-login {
         background-color: #007bff;
         border-color: #007bff;
@@ -18,8 +48,20 @@
         background-color: #218838;
         border-color: #218838;
     }
+
+    .dropdown-menu {
+        background-color: #343a40;
+    }
+
+    .dropdown-item {
+        color: #fff !important;
+    }
+
+    .dropdown-item:hover {
+        background-color: #495057;
+    }
 </style>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <a class="navbar-brand" href="<?= site_url('/') ?>">My Docs</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,43 +72,34 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?= site_url('/home') ?>">Home</a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="<?= site_url('/user-view') ?>">User</a>
-                </li> -->
                 <li class="nav-item">
                     <a class="nav-link" href="<?= site_url('/category') ?>">Category</a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="<?= site_url('/uploadForm') ?>">Document</a>
-                </li> -->
             </ul>
             <ul class="navbar-nav">
                 <?php
                 $session = session();
                 $userSession = $session->get('user');
                 if ($userSession !== null) { ?>
-                    <!-- Jika user telah login -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <?= $userSession['name'] ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="<?= site_url('/home') ?>">Dasboard</a>
+                            <a class="dropdown-item" href="<?= site_url('/home') ?>">Dashboard</a>
                             <a class="dropdown-item" href="<?= site_url('/profile') ?>">Profile</a>
                             <a class="dropdown-item" href="<?= site_url('/logout') ?>">Logout</a>
                         </div>
                     </li>
                 <?php } else { ?>
-                    <!-- Jika user belum login -->
                     <li class="nav-item">
-                        <a class="nav-link btn btn-login text-white ml-2" href="<?= site_url('/loginForm') ?>">Login</a>
+                        <a class="nav-link btn btn-login" href="<?= site_url('/loginForm') ?>">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-register text-white ml-2" href="<?= site_url('/user-form') ?>">Register</a>
+                        <a class="nav-link btn btn-register" href="<?= site_url('/user-form') ?>">Register</a>
                     </li>
                 <?php } ?>
             </ul>
-
         </div>
     </div>
 </nav>

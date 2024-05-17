@@ -9,6 +9,7 @@
     <title>Home</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
 </head>
 
 <body>
@@ -67,7 +68,7 @@
                 <canvas id="myChart"></canvas>
             </div>
             <div class="col-md-6">
-                <h2 class="mb-4">My Docs Dasboard</h2>
+                <h2 class="mb-4">My Docs Dashboard</h2>
                 <?php if ($user) : ?>
                     <h5 class="mb-4">Welcome back, <?= $user['name'] ?>!</h5>
                 <?php endif; ?>
@@ -85,7 +86,6 @@
                         <h4><?= $totalSize ?> MB</h4>
                     </div>
                 </div>
-                <!-- Modern Upload Document Button -->
                 <div class="text-center">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">Upload Document</button>
                 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\CategoryModel;
 use CodeIgniter\Controller;
 use App\Models\DocumentModel;
 
@@ -11,17 +12,26 @@ class DownloadController extends Controller
     {
 
         $documentModel = new DocumentModel();
-        $documents = $documentModel->where('path', $fileName)->first();
-        if ($documents == null) {
+        $document = $documentModel->where('path', $fileName)->first();
+        if ($document == null) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
-        if ($documents['permission'] == '1') {
+        if ($document['permission'] == '1' || $document['permission'] == '2') {
             $session = session();
             $user = $session->get('user');
     
             if ($user === null) {
                 throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            }
+
+            if ($document['permission'] == '1') {
+                $categoryModel = new CategoryModel();
+                $category = $categoryModel->where('id', $document['category_id'])->first();
+
+                if ($category === null || $user['id'] !== $category['user_id']) {
+                    throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+                }
             }
         }
 

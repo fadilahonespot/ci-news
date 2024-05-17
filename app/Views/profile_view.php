@@ -13,16 +13,13 @@
             font-family: Arial, sans-serif;
         }
 
-        .container {
-            max-width: 700px;
-            margin: 50px auto;
-        }
-
         .profile-card {
             background-color: #fff;
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            margin: 50px auto;
         }
 
         .profile-card h2 {
