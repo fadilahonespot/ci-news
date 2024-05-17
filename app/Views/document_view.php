@@ -58,8 +58,8 @@
         }
 
         .file-icon {
-            max-width: 50px;
-            margin-right: 15px;
+            max-width: 54px;
+            margin-right: 2px;
         }
 
         .permission-icon {
@@ -125,7 +125,6 @@
                             <button type="submit" class="btn btn-primary" id="uploadButton" disabled>Upload</button>
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -288,10 +287,8 @@
                                         case 'gif':
                                             $icon = 'gif.svg';
                                             break;
-                                        case 'docx':
-                                            $icon = 'docx.svg';
-                                            break;
                                         case 'doc':
+                                        case 'docx':
                                             $icon = 'doc.svg';
                                             break;
                                         case 'pdf':
@@ -302,6 +299,14 @@
                                             break;
                                         case 'rar':
                                             $icon = 'rar.svg';
+                                            break;
+                                        case 'xlsx':
+                                        case 'xls':
+                                            $icon = 'xls.svg';
+                                            break;
+                                        case 'ppt':
+                                        case 'pptx':
+                                            $icon = 'ppt.svg';
                                             break;
                                         default:
                                             $icon = 'default.svg';
@@ -489,7 +494,7 @@
             if (e.target.classList.contains('downloadDocument')) {
                 var documentPath = e.target.getAttribute('data-path');
                 var documentName = e.target.getAttribute('data-name');
-                
+
                 var downloadButton = document.getElementById('downloadDocumentButton');
                 downloadButton.setAttribute('href', '<?= site_url('downloads/') ?>' + documentPath);
 
