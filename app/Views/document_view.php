@@ -36,6 +36,53 @@
         .context-menu .list-group-item:hover {
             background-color: #f5f5f5;
         }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .card-hover:hover {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .img-fluid {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .card-body {
+            display: flex;
+            align-items: center;
+        }
+
+        .file-icon {
+            max-width: 50px;
+            margin-right: 15px;
+        }
+
+        .permission-icon {
+            width: 20px;
+            height: 15px;
+            margin-right: 5px;
+        }
+
+        .text-muted {
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+        }
+
+        .card-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+        }
+
+        .card-text {
+            margin-bottom: 0.5em;
+        }
     </style>
 </head>
 
@@ -172,10 +219,11 @@
                                 <input type="text" class="form-control" id="shareDocumentDownloadUrl" name="url" readonly>
                             </div>
                             <div class="form-group">
-                                <label for="shareDocumentPermission">Perijinan akses dokumen</label>
+                                <label for="shareDocumentPermission">Izin Akses</label>
                                 <select class="form-control" id="shareDocumentPermission" name="permission">
-                                    <option value="1">Sesama user saja</option>
-                                    <option value="2">Semua orang</option>
+                                    <option value="1">Hanya Saya </option>
+                                    <option value="2">Sesama Pengguna</option>
+                                    <option value="3">Semua Orang</option>
                                 </select>
                             </div>
                             <input type="hidden" id="shareDocumentId" name="id">
@@ -249,17 +297,40 @@
                                         case 'pdf':
                                             $icon = 'pdf.svg';
                                             break;
-                                            // Add more cases for other file extensions if needed
+                                        case 'zip':
+                                            $icon = 'zip.svg';
+                                            break;
+                                        case 'rar':
+                                            $icon = 'rar.svg';
+                                            break;
                                         default:
                                             $icon = 'default.svg';
                                     }
                                     ?>
-                                    <img src="<?= base_url('icon/' . $icon) ?>" alt="File Extension Icon" class="img-fluid" style="max-width: 50px;">
+                                    <img src="<?= base_url('icon/' . $icon) ?>" alt="File Extension Icon" class="file-icon img-fluid">
                                 </div>
+                                <?php
+                                $permission = $document['permission'];
+                                $iconPermission = '';
+                                switch ($permission) {
+                                    case '1':
+                                        $iconPermission = 'private.svg';
+                                        break;
+                                    case '2':
+                                        $iconPermission = 'member.svg';
+                                        break;
+                                    case '3':
+                                        $iconPermission = 'public.svg';
+                                        break;
+                                }
+                                ?>
                                 <div class="col">
                                     <h6 class="card-title"><?= $document['judul'] ?></h6>
-                                    <p class="card-text text-muted"><?= $document['keterangan'] ?></p>
-                                    <p class="card-text text-muted"><?= $document['created_at'] ?> | <?= pathinfo($document['path'], PATHINFO_EXTENSION) ?> | <?= $document['size'] ?> </p>
+                                    <p class="card-text"><?= $document['keterangan'] ?></p>
+                                    <p class="card-text text-muted">
+                                        <img src="<?= base_url('icon/' . $iconPermission) ?>" alt="Permission Icon" class="permission-icon">
+                                        <?= $document['created_at'] ?> | <?= $extension ?> | <?= $document['size'] ?>
+                                    </p>
                                     <!-- Add more details about the document -->
                                 </div>
                             </div>

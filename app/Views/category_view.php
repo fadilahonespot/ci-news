@@ -31,6 +31,50 @@
         .context-menu .list-group-item:hover {
             background-color: #f5f5f5;
         }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .card-hover {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #000;
+            /* Ubah warna teks judul menjadi hitam */
+        }
+
+        .card-text {
+            color: #6c757d;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-body a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card-body a:hover {
+            text-decoration: none;
+            color: inherit;
+        }
     </style>
 </head>
 
@@ -129,7 +173,7 @@
             <?php foreach ($categories as $category) : ?>
                 <div class="col-md-4 mb-4">
                     <div class="card position-relative card-hover" id="categoryCard<?= $category['id'] ?>">
-                        <a href="<?= site_url('category/' . $category['id']) ?>" style="text-decoration: none; color: inherit;">
+                        <a href="<?= site_url('category/' . $category['id']) ?>">
                             <div class="card-body">
                                 <h5 class="card-title"><?= $category['nama'] ?></h5>
                                 <p class="card-text"><?= $category['deskripsi'] ?></p>

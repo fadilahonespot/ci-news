@@ -85,7 +85,7 @@ class DocumentController extends Controller
         $validation->setRules([
             'judul' => 'required',
             'keterangan' => 'required',
-            'path' => 'uploaded[path]|mime_in[path,image/jpg,image/jpeg,image/png,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document]|max_size[path,6024]',
+            'path' => 'uploaded[path]|mime_in[path,image/jpg,image/jpeg,image/png,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/zip,application/x-zip-compressed,multipart/x-zip,application/x-rar-compressed,application/vnd.rar]|max_size[path,16024]',
             'categoryId' => 'required'
         ]);
 
