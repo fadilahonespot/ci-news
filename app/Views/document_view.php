@@ -183,7 +183,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        Apakah Anda yakin ingin menghapus dokument ini? <span id="documentName" class="font-weight-bold"></span>
+                        Apakah Anda yakin ingin menghapus dokument ini? <span id="deleteDocumentName" class="font-weight-bold"></span>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
@@ -248,7 +248,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Apakah Anda yakin ingin mengunduh dokumen ini?</p>
+                        Apakah Anda yakin ingin mengunduh dokumen ini? <span id="downloadDocumentName" class="font-weight-bold"></span>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
@@ -427,6 +427,7 @@
                 // Menyimpan data dokumen di dalam atribut data
                 var downloadDocument = menu.querySelector('.downloadDocument');
                 downloadDocument.setAttribute('data-path', documentPath);
+                downloadDocument.setAttribute('data-name', documentTitle);
 
                 var editDocument = menu.querySelector('.editDocument');
                 editDocument.setAttribute('data-id', documentId);
@@ -487,8 +488,12 @@
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('downloadDocument')) {
                 var documentPath = e.target.getAttribute('data-path');
+                var documentName = e.target.getAttribute('data-name');
+                
                 var downloadButton = document.getElementById('downloadDocumentButton');
                 downloadButton.setAttribute('href', '<?= site_url('downloads/') ?>' + documentPath);
+
+                document.getElementById('downloadDocumentName').textContent = documentName;
 
                 // Menambahkan event listener untuk menutup modal saat tombol unduh diklik
                 downloadButton.addEventListener('click', function() {
@@ -508,7 +513,7 @@
                 // Implementasi logika untuk menghapus dokumen berdasarkan documentId
                 document.getElementById('deleteDocumentButton').setAttribute('href', '<?= site_url('delete-document/') ?>' + documentId);
 
-                document.getElementById('documentName').textContent = documentName;
+                document.getElementById('deleteDocumentName').textContent = documentName;
                 $('#confirmDeleteModal').modal('show');
             }
         });
