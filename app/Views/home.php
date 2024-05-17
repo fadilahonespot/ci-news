@@ -105,7 +105,7 @@
                     </form>
                 </div>
                 <?php if ($searchQuery) : ?>
-                    <p>Menampilkan hasil pencarian untuk: <strong><?= esc($searchQuery) ?></strong>. Total hasil: <?= count($lastDocuments) ?></p>
+                    <p>Menampilkan hasil pencarian untuk: <strong><?= esc($searchQuery) ?></strong>. Total hasil: <?= $totalDocuments ?></p>
                 <?php endif; ?>
 
                 <table class="table">
@@ -142,15 +142,15 @@
         <nav aria-label="Page navigation">
             <ul class="pagination">
                 <?php if ($currentPage > 1) : ?>
-                    <li class="page-item"><a class="page-link" href="?page=<?= $currentPage - 1 ?>">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="?page=<?= $currentPage - 1 ?>&q=<?= urlencode($searchQuery) ?>">Previous</a></li>
                 <?php endif; ?>
 
                 <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
-                    <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>"><a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a></li>
+                    <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>"><a class="page-link" href="?page=<?= $i ?>&q=<?= urlencode($searchQuery) ?>"><?= $i ?></a></li>
                 <?php endfor; ?>
 
                 <?php if ($currentPage < $totalPages) : ?>
-                    <li class="page-item"><a class="page-link" href="?page=<?= $currentPage + 1 ?>">Next</a></li>
+                    <li class="page-item"><a class="page-link" href="?page=<?= $currentPage + 1 ?>&q=<?= urlencode($searchQuery) ?>">Next</a></li>
                 <?php endif; ?>
             </ul>
         </nav>

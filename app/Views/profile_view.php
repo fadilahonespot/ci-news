@@ -73,6 +73,23 @@
             background-color: #c82333;
             border-color: #bd2130;
         }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .toggle-password img {
+            width: 20px;
+            height: 20px;
+        }
     </style>
 </head>
 
@@ -116,6 +133,63 @@
             </div>
         </div>
 
+        <!-- Modal Ubah Password -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabel">Ubah Password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="changePasswordForm" action="<?= site_url('/change-password') ?>" method="POST">
+                            <div class="form-group password-wrapper">
+                                <label for="currentPassword">Password Saat Ini</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text toggle-password" data-target="#currentPassword">
+                                            <img src="<?= base_url('icon/fa-eye-slash.svg') ?>" alt="Show" class="show-password">
+                                            <img src="<?= base_url('icon/fa-eye.svg') ?>" alt="Hide" class="hide-password d-none">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group password-wrapper">
+                                <label for="newPassword">Password Baru</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text toggle-password" data-target="#newPassword">
+                                            <img src="<?= base_url('icon/fa-eye-slash.svg') ?>" alt="Show" class="show-password">
+                                            <img src="<?= base_url('icon/fa-eye.svg') ?>" alt="Hide" class="hide-password d-none">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group password-wrapper">
+                                <label for="confirmNewPassword">Konfirmasi Password Baru</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="confirmNewPassword" name="confirmNewPassword" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text toggle-password" data-target="#confirmNewPassword">
+                                            <img src="<?= base_url('icon/fa-eye-slash.svg') ?>" alt="Show" class="show-password">
+                                            <img src="<?= base_url('icon/fa-eye.svg') ?>" alt="Hide" class="hide-password d-none">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Ubah Password</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="profile-card">
             <h2>User Profile</h2>
             <div class="row">
@@ -136,11 +210,53 @@
                     <a href="#" class="btn btn-primary btn-block" data-toggle="modal" data-target="#editProfileModal">Edit Profile</a>
                 </div>
                 <div class="col-md-6">
-                    <a href="<?= site_url('/change-password') ?>" class="btn btn-danger btn-block">Ubah Password</a>
+                    <a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#changePasswordModal">Ubah Password</a>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            // Toggle password visibility
+            $('.toggle-password').on('click', function() {
+                var target = $($(this).data('target'));
+                var inputType = target.attr('type');
+
+                if (inputType === 'password') {
+                    target.attr('type', 'text');
+                    $(this).find('.show-password').addClass('d-none');
+                    $(this).find('.hide-password').removeClass('d-none');
+                } else {
+                    target.attr('type', 'password');
+                    $(this).find('.show-password').removeClass('d-none');
+                    $(this).find('.hide-password').addClass('d-none');
+                }
+            });
+
+            // Handle form submission for password change
+            $('#changePasswordForm').on('submit', function(e) {
+                e.preventDefault();
+
+                // Simple client-side validation
+                var newPassword = $('#newPassword').val();
+                var confirmNewPassword = $('#confirmNewPassword').val();
+
+                if (newPassword.length < 6) {
+                    alert('Password baru harus terdiri dari minimal 6 karakter.');
+                    return;
+                }
+
+                if (newPassword !== confirmNewPassword) {
+                    alert('Password baru dan konfirmasi password tidak cocok.');
+                    return;
+                }
+
+                // If validation passes, submit the form
+                this.submit();
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -163,4 +163,51 @@ class UserController extends Controller
 
         return view('profile_view', $data);
     }
+
+    public function updatePassword()
+    {
+        // Memulai session
+        $session = session();
+
+        // Mengambil user dari session
+        $user = $session->get('user');
+
+        if ($user === null) {
+            return redirect()->to('/loginForm')->with('error', 'Anda belum login');
+        }
+
+        // Validasi input
+        $validation = \Config\Services::validation();
+        $validation->setRules([
+            'currentPassword' => 'required',
+            'newPassword' => 'required|min_length[6]',
+            'confirmNewPassword' => 'required|matches[newPassword]'
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+        }
+
+        // Mendapatkan data input
+        $currentPassword = (string) $this->request->getPost('currentPassword');
+        $newPassword = (string) $this->request->getPost('newPassword');
+
+        // Mengambil user dari database
+        $userModel = new UserModel();
+        $userData = $userModel->find($user['id']);
+
+        // Memeriksa apakah password saat ini sesuai
+        if (!password_verify($currentPassword, $userData['password'])) {
+            return redirect()->back()->with('error', 'Password saat ini salah.');
+        }
+
+        // Mengupdate password baru
+        $userModel->update($user['id'], ['password' => password_hash($newPassword, PASSWORD_DEFAULT)]);
+
+        // Mengatur pesan sukses
+        $session->setFlashdata('success', 'Password berhasil diubah.');
+
+        // Redirect ke halaman profil atau halaman lainnya
+        return redirect()->to('/profile');
+    }
 }
