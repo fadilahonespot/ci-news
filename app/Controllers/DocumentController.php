@@ -85,7 +85,7 @@ class DocumentController extends Controller
         $validation->setRules([
             'judul' => 'required',
             'keterangan' => 'required',
-            'path' => 'uploaded[path]|mime_in[path,image/jpg,image/jpeg,image/png,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/zip,application/x-zip-compressed,multipart/x-zip,application/x-rar-compressed,application/vnd.rar]|max_size[path,16024]',
+            'path' => 'uploaded[path]|mime_in[path,image/jpg,image/jpeg,image/png,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.google-apps.document,application/vnd.google-apps.spreadsheet,application/vnd.google-apps.presentation,application/zip,application/x-zip-compressed,multipart/x-zip,application/x-rar-compressed,application/vnd.rar]|max_size[path,16024]',
             'categoryId' => 'required'
         ]);
 
@@ -123,6 +123,7 @@ class DocumentController extends Controller
 
         return redirect()->back()->with('success', 'Document berhasil di upload.');
     }
+
 
     public function updateDocument()
     {
