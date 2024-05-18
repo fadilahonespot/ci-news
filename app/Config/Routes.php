@@ -32,5 +32,6 @@ $routes->get('preview/(:num)', 'PreviewController::index/$1');
 $routes->get('profile', 'UserController::profile');
 $routes->get('/', 'IndexController::index');
 $routes->post('/change-password', 'UserController::updatePassword');
+$routes->get('analyze-document/(:num)', 'DocumentController::analyzeDocument/$1');
 
 

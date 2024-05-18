@@ -257,6 +257,27 @@
             </div>
         </div>
 
+        <!-- Analyze Document Modal -->
+        <div class="modal fade" id="analyzeDocumentModal" tabindex="-1" role="dialog" aria-labelledby="analyzeDocumentModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="analyzeDocumentModalLabel">Analyze Document</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="analysisResult"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <!-- Upload Document Section -->
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><a href="<?= site_url('/category') ?>">Category</a> > <?= $category['nama'] ?></h5>
@@ -352,6 +373,7 @@
                 <li class="list-group-item shareDocument" data-toggle="modal" data-target="#shareDocumentModal">Share</li>
                 <li class="list-group-item editDocument" data-toggle="modal" data-target="#editDocumentModal">Edit</li>
                 <li class="list-group-item deleteDocument" data-toggle="modal" data-target="#confirmDeleteModal">Delete</li>
+                <li class="list-group-item analyzeDocument" data-toggle="modal" data-target="#analyzeDocumentModal">Analyze</li>
             </ul>
         </div>
 
@@ -444,6 +466,9 @@
                 var deleteDocument = menu.querySelector('.deleteDocument');
                 deleteDocument.setAttribute('data-id', documentId);
                 deleteDocument.setAttribute('data-name', documentTitle);
+
+                var analizeDocument = menu.querySelector('.analyzeDocument');
+                analizeDocument.setAttribute('data-id', documentId);
 
                 var shareDocument = menu.querySelector('.shareDocument');
                 shareDocument.setAttribute('data-id', documentId);
@@ -552,6 +577,41 @@
 
             // Tampilkan modal
             $('#shareDocumentModal').modal('show');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('analyzeDocument')) {
+                var documentId = e.target.getAttribute('data-id');
+
+                // Display loading message
+                document.getElementById('analysisResult').innerHTML = "Analyzing document, please wait...";
+
+                // Call the API to analyze the document
+                fetch('<?= base_url('analyze-document') ?>/' + documentId)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('API response data:', data); // Log the response data
+                        if (data.analysis) {
+                            document.getElementById('analysisResult').innerHTML = data.analysis;
+                        } else if (data.error) {
+                            document.getElementById('analysisResult').innerHTML = data.error;
+                        } else {
+                            document.getElementById('analysisResult').innerHTML = "An unexpected error occurred.";
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error analyzing document:', error);
+                        document.getElementById('analysisResult').innerHTML = "An error occurred while analyzing the document.";
+                    });
+
+                // Show the modal
+                $('#analyzeDocumentModal').modal('show');
+            }
         });
     </script>
 
