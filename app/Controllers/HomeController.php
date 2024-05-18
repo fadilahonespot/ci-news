@@ -30,7 +30,7 @@ class HomeController extends Controller
         $documentsModel = new DocumentModel();
 
         // Mengambil data jumlah category dan total dokumen berdasarkan user_id
-        $categoriesData = $categoryModel->select('category_id, COUNT(document.id) AS total_documents')
+        $categoriesData = $categoryModel->select('category.id as category_id, COUNT(document.id) AS total_documents')
             ->join('document', 'category.id = document.category_id', 'left')
             ->where('category.user_id', $userId)
             ->groupBy('category.id')
@@ -58,44 +58,56 @@ class HomeController extends Controller
         $perPage = 9;
 
         // Tentukan halaman saat ini
-        $currentPage = $this->request->getVar('page') ?? 1;
+        $currentPage = is_numeric($this->request->getVar('page')) ? (int)$this->request->getVar('page') : 1;
 
         // Hitung offset
         $offset = ($currentPage - 1) * $perPage;
 
         // Mengambil parameter pencarian
-        $searchQuery = $this->request->getVar('q');
+        $searchQuery = $this->request->getVar('q') ? trim($this->request->getVar('q')) : '';
 
-        // Mengambil dokumen terakhir berdasarkan category_id dengan pagination dan pencarian
-        $documentQuery = $documentsModel->select('document.*, category.id as category_id, category.nama as category_name')
-            ->join('category', 'category.id = document.category_id')
-            ->whereIn('category_id', $categoryIdsArray)
-            ->orderBy('document.id', 'DESC');
-
-        // Jika ada kata kunci pencarian, tambahkan kondisi pencarian
-        if ($searchQuery) {
-            $documentQuery->like('document.judul', $searchQuery);
-        }
-
-        $lastDocuments = $documentQuery->findAll($perPage, $offset);
-
-        // Hitung total dokumen
-        $totalDocuments = 0;
-        foreach ($categoriesData as $category) {
-            $totalDocuments += $category['total_documents'];
-        }
-
-        // Jika ada kata kunci pencarian, hitung ulang total dokumen yang sesuai dengan pencarian
-        if ($searchQuery) {
-            $totalDocuments = $documentsModel->selectCount('document.id')
+        // Validasi jika categoryIdsArray tidak kosong
+        if (!empty($categoryIdsArray)) {
+            // Mengambil dokumen terakhir berdasarkan category_id dengan pagination dan pencarian
+            $documentQuery = $documentsModel->select('document.*, category.id as category_id, category.nama as category_name')
                 ->join('category', 'category.id = document.category_id')
                 ->whereIn('category_id', $categoryIdsArray)
-                ->like('document.judul', $searchQuery)
-                ->countAllResults(false);
+                ->orderBy('document.id', 'DESC');
+
+            // Jika ada kata kunci pencarian, tambahkan kondisi pencarian
+            if ($searchQuery) {
+                $documentQuery->like('document.judul', $searchQuery);
+            }
+
+            $lastDocuments = $documentQuery->findAll($perPage, $offset);
+
+            // Hitung total dokumen
+            $totalDocuments = 0;
+            foreach ($categoriesData as $category) {
+                $totalDocuments += $category['total_documents'];
+            }
+
+            // Jika ada kata kunci pencarian, hitung ulang total dokumen yang sesuai dengan pencarian
+            if ($searchQuery) {
+                $totalDocuments = $documentsModel->selectCount('document.id')
+                    ->join('category', 'category.id = document.category_id')
+                    ->whereIn('category_id', $categoryIdsArray)
+                    ->like('document.judul', $searchQuery)
+                    ->countAllResults(false);
+            } else {
+                $totalDocuments = $documentsModel->selectCount('document.id')
+                    ->join('category', 'category.id = document.category_id')
+                    ->whereIn('category_id', $categoryIdsArray)
+                    ->countAllResults(false);
+            }
+        } else {
+            // Jika categoryIdsArray kosong, set lastDocuments dan totalDocuments ke nilai default
+            $lastDocuments = [];
+            $totalDocuments = 0;
         }
 
         // Mengambil data kategori dari model
-        $categories = $categoryModel->where('user_id', $user['id'])->findAll();
+        $categories = $categoryModel->where('user_id', $userId)->findAll();
 
         // Hitung jumlah halaman yang diperlukan
         $totalPages = ceil($totalDocuments / $perPage);

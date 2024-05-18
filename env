@@ -141,3 +141,5 @@
 #--------------------------------------------------------------------
 
 # curlrequest.shareOptions = false
+
+#OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxx

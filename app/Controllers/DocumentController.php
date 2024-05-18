@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\CategoryModel;
 use App\Models\DocumentModel;
 use CodeIgniter\Controller;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class DocumentController extends Controller
 {
@@ -20,7 +21,6 @@ class DocumentController extends Controller
 
         $documentModel = new DocumentModel();
         $categoryModel = new CategoryModel();
-        $categoriesyModel = new CategoryModel();
 
         // Tentukan jumlah item per halaman
         $perPage = 9;
@@ -38,7 +38,7 @@ class DocumentController extends Controller
         $totalDocuments = $documentModel->where('category_id', $id)->countAllResults();
 
         // Mengambil data kategori dari model
-        $categories = $categoriesyModel->where('user_id', $user['id'])->findAll();
+        $categories = $categoryModel->where('user_id', $user['id'])->findAll();
 
         // Mendapatkan category
         $category = $categoryModel->where('id', $id)->first();
@@ -66,6 +66,7 @@ class DocumentController extends Controller
         if ($user === null) {
             return redirect()->to('/loginForm')->with('error', 'Anda belum login');
         }
+
         // Mengambil data kategori dari model
         $categoryModel = new CategoryModel();
         $categories = $categoryModel->where('user_id', $user['id'])->findAll();
@@ -124,7 +125,6 @@ class DocumentController extends Controller
         return redirect()->back()->with('success', 'Document berhasil di upload.');
     }
 
-
     public function updateDocument()
     {
         $validation = \Config\Services::validation();
@@ -172,5 +172,87 @@ class DocumentController extends Controller
         $documentModel->delete($id);
 
         return redirect()->back()->with('success', 'Document deleted successfully.');
+    }
+
+    public function analyzeDocument($id)
+    {
+        // Mengambil data user dari session
+        $session = session();
+        $user = $session->get('user');
+
+        if ($user === null) {
+            return redirect()->to('/loginForm')->with('error', 'Anda belum login');
+        }
+
+        // Memuat dokumen berdasarkan ID
+        $documentModel = new DocumentModel();
+        $document = $documentModel->where('id', $id)->first();
+        if (!$document) {
+            return $this->response->setStatusCode(404)->setJSON(['error' => 'Dokumen tidak ditemukan.']);
+        }
+
+        // Membaca konten dokumen
+        $filePath = FCPATH . 'uploads/' . $document['path'];
+        $content = file_get_contents($filePath);
+
+        // Validasi apakah konten sudah dalam format UTF-8
+        if (!mb_check_encoding($content, 'UTF-8')) {
+            return $this->response->setStatusCode(500)->setJSON(['error' => 'Konten tidak dalam format UTF-8.']);
+        }
+
+        // Panggil API ChatGPT (Pseudo-code, ganti dengan panggilan API yang sesungguhnya)
+        $apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
+        $apiKey = getenv('OPENAI_API_KEY'); // Retrieve from environment variable
+
+
+        $response = $this->callChatgptApi($apiUrl, $apiKey, $content);
+
+        // Validasi data JSON
+        $jsonData = json_decode($response);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return $this->response->setStatusCode(500)->setJSON(['error' => 'Gagal mem-parsing data JSON.']);
+        }
+
+        // Kirim hasil analisis kembali sebagai JSON
+        return $this->response->setJSON(['analysis' => $jsonData]);
+    }
+
+
+    private function callChatgptApi($url, $apiKey, $content)
+    {
+        // Buat payload JSON sesuai dengan format yang diberikan
+        $data = [
+            "model" => "gpt-3.5-turbo",
+            "messages" => [
+                ["role" => "user", "content" => $content]
+            ],
+            "temperature" => 0.7
+        ];
+
+        // Konfigurasi opsi untuk permintaan HTTP
+        $options = [
+            "http" => [
+                "header" => "Content-type: application/json\r\nAuthorization: Bearer " . $apiKey,
+                "method" => "POST",
+                "content" => json_encode($data)
+            ]
+        ];
+
+        // Buat konteks aliran untuk permintaan HTTP
+        $context  = stream_context_create($options);
+
+        // Kirim permintaan HTTP ke URL yang ditentukan
+        $result = file_get_contents($url, false, $context);
+
+        // Periksa jika ada kesalahan dalam mengirim permintaan
+        if ($result === FALSE) {
+            return 'Error calling ChatGPT API.';
+        }
+
+        // Decode respons JSON
+        $response = json_decode($result, true);
+
+        // Kembalikan teks hasil dari respons
+        return $response['choices'][0]['text'];
     }
 }
