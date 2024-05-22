@@ -9,9 +9,10 @@ RUN apt-get update && apt-get install -y \
     zip \
     libzip-dev \
     unzip \
+    libicu-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
-    && docker-php-ext-install mysqli pdo pdo_mysql zip
+    && docker-php-ext-install mysqli pdo pdo_mysql zip intl
 
 # Mengaktifkan modul Apache rewrite
 RUN a2enmod rewrite
@@ -36,7 +37,7 @@ COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Jalankan composer install dan tangkap error
-RUN composer install || { cat /var/www/html/composer.log; echo "Composer install failed"; exit 1; }
+RUN composer install || { echo "Composer install failed"; exit 1; }
 
 # Mengekspos port 80 untuk Apache
 EXPOSE 80
