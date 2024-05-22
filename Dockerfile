@@ -39,6 +39,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Jalankan composer install dan tangkap error
 RUN composer install || { echo "Composer install failed"; exit 1; }
 
+# Buat folder uploads dan set hak aksesnya
+RUN mkdir -p /var/www/html/public/uploads \
+    && chown -R www-data:www-data /var/www/html/public/uploads \
+    && chmod -R 755 /var/www/html/public/uploads
+
+# Menandai /var/www/html/public/uploads sebagai volume
+VOLUME /var/www/html/public/uploads
+
 # Mengekspos port 80 untuk Apache
 EXPOSE 80
 
