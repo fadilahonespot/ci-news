@@ -31,18 +31,18 @@
                                 <?= $userSession['name'] ?>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="<?= site_url('/home') ?>">Dasboard</a>
-                                <a class="dropdown-item" href="<?= site_url('/profile') ?>">Profile</a>
-                                <a class="dropdown-item" href="<?= site_url('/logout') ?>">Logout</a>
+                                <a class="dropdown-item" href="<?= base_url('/home') ?>">Dasboard</a>
+                                <a class="dropdown-item" href="<?= base_url('/profile') ?>">Profile</a>
+                                <a class="dropdown-item" href="<?= base_url('/logout') ?>">Logout</a>
                             </div>
                         </li>
                     <?php } else { ?>
                         <!-- Jika user belum login -->
                         <li class="nav-item">
-                            <a class="nav-link btn btn-login text-white ml-2" href="<?= site_url('/loginForm') ?>">Login</a>
+                            <a class="nav-link btn btn-login text-white ml-2" href="<?= base_url('/loginForm') ?>">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn btn-register text-white ml-2" href="<?= site_url('/user-form') ?>">Register</a>
+                            <a class="nav-link btn btn-register text-white ml-2" href="<?= base_url('/user-form') ?>">Register</a>
                         </li>
                     <?php } ?>
                 </ul>

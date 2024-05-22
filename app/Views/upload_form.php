@@ -35,7 +35,7 @@
 
                             <div class="modal-body">
                                 <!-- Form upload dokumen -->
-                                <form id="uploadForm" action="<?= site_url('upload') ?>" method="post" enctype="multipart/form-data">
+                                <form id="uploadForm" action="<?= base_url('upload') ?>" method="post" enctype="multipart/form-data">
                                     <div class="form-group">
                                         <label for="judul">Judul</label>
                                         <input type="text" class="form-control" id="judul" name="judul">

@@ -104,7 +104,7 @@
 
                     <div class="modal-body">
                         <!-- Form upload dokumen -->
-                        <form id="uploadForm" action="<?= site_url('upload') ?>" method="post" enctype="multipart/form-data">
+                        <form id="uploadForm" action="<?= base_url('upload') ?>" method="post" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="judul">Judul</label>
                                 <input type="text" class="form-control" id="judul" name="judul">
@@ -141,7 +141,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form edit dokumen -->
-                        <form id="editDocumentForm" action="<?= site_url('update-document') ?>" method="post" autocomplete="off">
+                        <form id="editDocumentForm" action="<?= base_url('update-document') ?>" method="post" autocomplete="off">
                             <input type="hidden" id="editDocumentId" name="id">
                             <input type="hidden" id="editPermission" name="permission">
                             <div class="form-group">
@@ -204,7 +204,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form share dokumen -->
-                        <form id="shareDocumentForm" action="<?= site_url('update-document') ?>" method="post">
+                        <form id="shareDocumentForm" action="<?= base_url('update-document') ?>" method="post">
                             <div class="form-group">
                                 <label for="shareDocumentName">Nama</label>
                                 <input type="text" class="form-control" id="shareDocumentName" name="name" readonly>
@@ -280,7 +280,7 @@
 
         <!-- Upload Document Section -->
         <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0"><a href="<?= site_url('/category') ?>">Category</a> > <?= $category['nama'] ?></h5>
+            <h5 class="mb-0"><a href="<?= base_url('/category') ?>">Category</a> > <?= $category['nama'] ?></h5>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">Upload</button>
         </div>
         <hr>
@@ -434,7 +434,7 @@
 
         function previewDocument(documentId) {
             // Redirect to the preview controller with document ID as parameter
-            window.location.href = "<?= site_url('preview/') ?>" + documentId;
+            window.location.href = "<?= base_url('preview/') ?>" + documentId;
         }
 
         document.addEventListener('contextmenu', function(e) {
@@ -521,7 +521,7 @@
                 var documentName = e.target.getAttribute('data-name');
 
                 var downloadButton = document.getElementById('downloadDocumentButton');
-                downloadButton.setAttribute('href', '<?= site_url('downloads/') ?>' + documentPath);
+                downloadButton.setAttribute('href', '<?= base_url('downloads/') ?>' + documentPath);
 
                 document.getElementById('downloadDocumentName').textContent = documentName;
 
@@ -541,7 +541,7 @@
                 var documentName = e.target.getAttribute('data-name');
 
                 // Implementasi logika untuk menghapus dokumen berdasarkan documentId
-                document.getElementById('deleteDocumentButton').setAttribute('href', '<?= site_url('delete-document/') ?>' + documentId);
+                document.getElementById('deleteDocumentButton').setAttribute('href', '<?= base_url('delete-document/') ?>' + documentId);
 
                 document.getElementById('deleteDocumentName').textContent = documentName;
                 $('#confirmDeleteModal').modal('show');

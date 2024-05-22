@@ -63,17 +63,17 @@
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-        <a class="navbar-brand" href="<?= site_url('/') ?>">My Docs</a>
+        <a class="navbar-brand" href="<?= base_url('/') ?>">My Docs</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= site_url('/home') ?>">Home</a>
+                    <a class="nav-link" href="<?= base_url('/home') ?>">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= site_url('/category') ?>">Category</a>
+                    <a class="nav-link" href="<?= base_url('/category') ?>">Category</a>
                 </li>
             </ul>
             <ul class="navbar-nav">
@@ -86,17 +86,17 @@
                             <?= $userSession['name'] ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="<?= site_url('/home') ?>">Dashboard</a>
-                            <a class="dropdown-item" href="<?= site_url('/profile') ?>">Profile</a>
-                            <a class="dropdown-item" href="<?= site_url('/logout') ?>">Logout</a>
+                            <a class="dropdown-item" href="<?= base_url('/home') ?>">Dashboard</a>
+                            <a class="dropdown-item" href="<?= base_url('/profile') ?>">Profile</a>
+                            <a class="dropdown-item" href="<?= base_url('/logout') ?>">Logout</a>
                         </div>
                     </li>
                 <?php } else { ?>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-login" href="<?= site_url('/loginForm') ?>">Login</a>
+                        <a class="nav-link btn btn-login" href="<?= base_url('/loginForm') ?>">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-register" href="<?= site_url('/user-form') ?>">Register</a>
+                        <a class="nav-link btn btn-register" href="<?= base_url('/user-form') ?>">Register</a>
                     </li>
                 <?php } ?>
             </ul>

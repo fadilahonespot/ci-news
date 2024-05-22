@@ -19,7 +19,7 @@
 <body>
   <div class="container mt-5">
     <form method="post" id="update_user" name="update_user" 
-    action="<?= site_url('/update') ?>">
+    action="<?= base_url('/update') ?>">
       <input type="hidden" name="id" id="id" value="<?php echo $user_obj['id']; ?>">
       <div class="form-group">
         <label>Name</label>

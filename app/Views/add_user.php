@@ -36,7 +36,7 @@
                         <?= session()->getFlashdata('success') ?>
                     </div>
                 <?php endif; ?>
-                <form method="post" id="add_create" name="add_create" action="<?= site_url('/submit-form') ?>">
+                <form method="post" id="add_create" name="add_create" action="<?= base_url('/submit-form') ?>">
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" id="name" name="name" class="form-control">
@@ -81,7 +81,7 @@
                 </form>
             </div>
             <div class="card-footer text-center">
-                <p>Do have an account? <a href="<?= site_url('/loginForm') ?>">Login</a></p>
+                <p>Do have an account? <a href="<?= base_url('/loginForm') ?>">Login</a></p>
             </div>
         </div>
     </div>

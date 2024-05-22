@@ -105,7 +105,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="<?= site_url('/update') ?>" method="POST">
+                        <form action="<?= base_url('/update') ?>" method="POST">
                             <div class="form-group">
                                 <label for="name">Name</label>
                                 <input type="text" class="form-control" id="name" name="name" value="<?= $user['name'] ?>">
@@ -141,7 +141,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="changePasswordForm" action="<?= site_url('/change-password') ?>" method="POST">
+                        <form id="changePasswordForm" action="<?= base_url('/change-password') ?>" method="POST">
                             <div class="form-group password-wrapper">
                                 <label for="currentPassword">Password Saat Ini</label>
                                 <div class="input-group">

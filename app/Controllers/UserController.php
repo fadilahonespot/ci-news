@@ -94,7 +94,7 @@ class UserController extends Controller
     {
         $userModel = new UserModel();
         $data['user'] = $userModel->where('id', $id)->delete($id);
-        return $this->response->redirect(site_url('/home'));
+        return $this->response->redirect(base_url('/home'));
     }
 
     public function loginForm()

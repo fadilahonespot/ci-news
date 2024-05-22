@@ -95,7 +95,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form tambah kategori -->
-                        <form action="<?= site_url('save-category') ?>" method="post">
+                        <form action="<?= base_url('save-category') ?>" method="post">
                             <div class="form-group">
                                 <label for="nama">Nama Kategori</label>
                                 <input type="text" class="form-control" id="nama" name="nama" required>
@@ -123,7 +123,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form edit kategori -->
-                        <form action="<?= site_url('update-category') ?>" method="post">
+                        <form action="<?= base_url('update-category') ?>" method="post">
                             <input type="hidden" name="id" id="editCategoryId">
                             <div class="form-group">
                                 <label for="editNama">Nama Kategori</label>
@@ -173,7 +173,7 @@
             <?php foreach ($categories as $category) : ?>
                 <div class="col-md-4 mb-4">
                     <div class="card position-relative card-hover" id="categoryCard<?= $category['id'] ?>">
-                        <a href="<?= site_url('category/' . $category['id']) ?>">
+                        <a href="<?= base_url('category/' . $category['id']) ?>">
                             <div class="card-body">
                                 <h5 class="card-title"><?= $category['nama'] ?></h5>
                                 <p class="card-text"><?= $category['deskripsi'] ?></p>
@@ -212,7 +212,7 @@
         $(document).ready(function() {
             $('.deleteCategory').click(function() {
                 var categoryId = $(this).data('id');
-                $('#deleteCategoryButton').attr('href', '<?= site_url('delete-category/') ?>' + categoryId);
+                $('#deleteCategoryButton').attr('href', '<?= base_url('delete-category/') ?>' + categoryId);
             });
         });
 
