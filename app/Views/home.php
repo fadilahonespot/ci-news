@@ -30,7 +30,7 @@
 
                     <div class="modal-body">
                         <!-- Form upload dokumen -->
-                        <form id="uploadForm" action="<?= site_url('upload') ?>" method="post" enctype="multipart/form-data">
+                        <form id="uploadForm" action="<?= base_url('upload') ?>" method="post" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="judul">Judul</label>
                                 <input type="text" class="form-control" id="judul" name="judul">
@@ -99,7 +99,7 @@
                         <h2>List Documents</h2>
                     </div>
                     <!-- Search form -->
-                    <form class="form-inline" action="<?= site_url('/home') ?>" method="get">
+                    <form class="form-inline" action="<?= base_url('/home') ?>" method="get">
                         <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
                     </form>
@@ -123,12 +123,12 @@
                     <tbody>
                         <?php foreach ($lastDocuments as $document) : ?>
                             <tr>
-                                <td><a href="<?= site_url('preview/' . $document['id']) ?>"><?= $document['judul'] ?></a></td>
+                                <td><a href="<?= base_url('preview/' . $document['id']) ?>"><?= $document['judul'] ?></a></td>
                                 <td><?= $document['keterangan'] ?></td>
                                 <td><?= pathinfo($document['path'], PATHINFO_EXTENSION) ?></td>
                                 <td><?= $document['size'] ?> </td>
                                 <td><?= $document['created_at'] ?></td>
-                                <td><a href="<?= site_url('category/' . $document['category_id']) ?>"><?= $document['category_name'] ?></a></td>
+                                <td><a href="<?= base_url('category/' . $document['category_id']) ?>"><?= $document['category_name'] ?></a></td>
                                 <td><a href="<?= base_url('downloads/' . $document['path']) ?>" class="btn btn-primary">Download</a></td>
                             </tr>
                         <?php endforeach; ?>

@@ -31,7 +31,7 @@
                     <div class="card-header">Login</div>
                     <div class="card-body">
                         <!-- Form login -->
-                        <form action="<?= site_url('/login') ?>" method="post">
+                        <form action="<?= base_url('/login') ?>" method="post">
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="email" name="email" id="email" class="form-control" required autofocus>
@@ -53,7 +53,7 @@
                         </form>
                     </div>
                     <div class="card-footer text-center">
-                        <p>Don't have an account? <a href="<?= site_url('/user-form') ?>">Register</a></p>
+                        <p>Don't have an account? <a href="<?= base_url('/user-form') ?>">Register</a></p>
                     </div>
                 </div>
             </div>
