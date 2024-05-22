@@ -1,5 +1,5 @@
 # Menggunakan gambar resmi PHP 8.3 dengan Apache
-FROM php:8.3.6-apache
+FROM php:8.3-apache
 
 # Menginstal ekstensi PHP yang dibutuhkan
 RUN apt-get update && apt-get install -y \
@@ -34,7 +34,9 @@ COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
 
 # Menyalin dan menjalankan perintah Composer untuk menginstal dependensi aplikasi
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install || { echo "Composer install failed"; exit 1; }
+
+# Jalankan composer install dan tangkap error
+RUN composer install || { cat /var/www/html/composer.log; echo "Composer install failed"; exit 1; }
 
 # Mengekspos port 80 untuk Apache
 EXPOSE 80
