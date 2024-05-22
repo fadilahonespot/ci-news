@@ -1,5 +1,5 @@
-# Menggunakan gambar resmi PHP dengan Apache
-FROM php:7.4-apache
+# Menggunakan gambar resmi PHP 8.3 dengan Apache
+FROM php:8.3.6-apache
 
 # Menginstal ekstensi PHP yang dibutuhkan
 RUN apt-get update && apt-get install -y \
@@ -22,6 +22,9 @@ WORKDIR /var/www/html
 # Menyalin file aplikasi ke dalam container
 COPY . /var/www/html
 
+# Menambahkan phpinfo.php untuk pengecekan versi PHP
+RUN echo '<?php phpinfo(); ?>' > /var/www/html/public/phpinfo.php
+
 # Memberikan hak akses yang tepat untuk file dan direktori
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
@@ -29,9 +32,9 @@ RUN chown -R www-data:www-data /var/www/html \
 # Menyalin file konfigurasi virtual host Apache
 COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
 
-# Menjalankan perintah Composer untuk menginstal dependensi aplikasi
+# Menyalin dan menjalankan perintah Composer untuk menginstal dependensi aplikasi
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install
+RUN composer install || { echo "Composer install failed"; exit 1; }
 
 # Mengekspos port 80 untuk Apache
 EXPOSE 80
